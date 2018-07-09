@@ -35,7 +35,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,19 +71,22 @@ public class MainActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LinearLayout activityLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        activityLayout.setLayoutParams(lp);
-        activityLayout.setOrientation(LinearLayout.VERTICAL);
-        activityLayout.setPadding(16, 16, 16, 16);
+        setContentView(R.layout.activity_main);
 
-        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+//        LinearLayout activityLayout = new LinearLayout(this);
+//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.MATCH_PARENT);
+//        activityLayout.setLayoutParams(lp);
+//        activityLayout.setOrientation(LinearLayout.VERTICAL);
+//        activityLayout.setPadding(16, 16, 16, 16);
+//
+//        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
+//                ViewGroup.LayoutParams.WRAP_CONTENT,
+//                ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        mCallApiButton = new Button(this);
+        //mCallApiButton = new Button(this);
+        mCallApiButton = (Button) findViewById(R.id.submitButton);
         mCallApiButton.setText(BUTTON_TEXT);
         mCallApiButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,21 +97,22 @@ public class MainActivity extends Activity
                 mCallApiButton.setEnabled(true);
             }
         });
-        activityLayout.addView(mCallApiButton);
+        //activityLayout.addView(mCallApiButton);
 
-        mOutputText = new TextView(this);
-        mOutputText.setLayoutParams(tlp);
-        mOutputText.setPadding(16, 16, 16, 16);
-        mOutputText.setVerticalScrollBarEnabled(true);
-        mOutputText.setMovementMethod(new ScrollingMovementMethod());
+        mOutputText = (TextView) findViewById(R.id.outputTextView);
+//        mOutputText = new TextView(this);
+//        mOutputText.setLayoutParams(tlp);
+//        mOutputText.setPadding(16, 16, 16, 16);
+//        mOutputText.setVerticalScrollBarEnabled(true);
+//        mOutputText.setMovementMethod(new ScrollingMovementMethod());
         mOutputText.setText(
                 "Click the \'" + BUTTON_TEXT +"\' button to test the API.");
-        activityLayout.addView(mOutputText);
+        //activityLayout.addView(mOutputText);
 
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("Calling YouTube Data API ...");
 
-        setContentView(activityLayout);
+        //setContentView(activityLayout);
 
         // Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
@@ -352,18 +359,39 @@ public class MainActivity extends Activity
          */
         private List<String> getDataFromApi() throws IOException {
             // Get a list of up to 10 files.
-            List<String> channelInfo = new ArrayList<String>();
-            ChannelListResponse result = mService.channels().list("snippet,contentDetails,statistics")
-                    .setForUsername("GoogleDevelopers")
+
+
+//            List<String> channelInfo = new ArrayList<String>();
+//            ChannelListResponse result = mService.channels().list("snippet,contentDetails,statistics")
+//                    .setForUsername("GoogleDevelopers")
+//                    .execute();
+//            List<Channel> channels = result.getItems();
+//            if (channels != null) {
+//                Channel channel = channels.get(0);
+//                channelInfo.add("This channel's ID is " + channel.getId() + ". " +
+//                        "Its title is '" + channel.getSnippet().getTitle() + ", " +
+//                        "and it has " + channel.getStatistics().getViewCount() + " views.");
+//            }
+//            return channelInfo;
+
+            List<String> searchList = new ArrayList<String>();
+            SearchListResponse result = mService.search().list("snippet")
+                    .setChannelId("UCi7GJNg51C3jgmYTUwqoUXA")
+                    .setQ("Bill Burr")
                     .execute();
-            List<Channel> channels = result.getItems();
-            if (channels != null) {
-                Channel channel = channels.get(0);
-                channelInfo.add("This channel's ID is " + channel.getId() + ". " +
-                        "Its title is '" + channel.getSnippet().getTitle() + ", " +
-                        "and it has " + channel.getStatistics().getViewCount() + " views.");
+            List<SearchResult> searches= result.getItems();
+            if (searches != null) {
+                SearchResult searchResult = searches.get(0);
+                searchList.add(searchResult.getId().getVideoId());
+
+                searchResult = searches.get(1);
+                searchList.add(searchResult.getId().getVideoId());
+
+                searchResult = searches.get(2);
+                searchList.add(searchResult.getId().getVideoId());
             }
-            return channelInfo;
+            return searchList;
+
         }
 
 
