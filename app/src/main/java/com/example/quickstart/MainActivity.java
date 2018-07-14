@@ -2,6 +2,10 @@ package com.example.quickstart;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -34,9 +38,11 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -48,44 +54,31 @@ import java.util.List;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends Activity
-        implements EasyPermissions.PermissionCallbacks {
-    GoogleAccountCredential mCredential;
-    private TextView mOutputText;
-    private Button mCallApiButton;
-    ProgressDialog mProgress;
+public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener,
+        EasyPermissions.PermissionCallbacks {
 
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
-    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
+//public class MainActivity extends Activity
+//        implements EasyPermissions.PermissionCallbacks {
 
-    private static final String BUTTON_TEXT = "Call YouTube Data API";
-    private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { YouTubeScopes.YOUTUBE_READONLY };
 
-    /**
-     * Create the main activity.
-     * @param savedInstanceState previously saved instance data.
-     */
+
+
+
+
+
+    public static final String API_KEY = "902314403878-tj8pkusc5h43s7u68a020ap0bc8uq8fi.apps.googleusercontent.com";
+    public static final String VIDEO_ID = "eWEF1Zrmdow";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+/** Initializing YouTube Player View **/
+        YouTubePlayerView youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtube_player);
+        youTubePlayerView.initialize(API_KEY, this);
 
-//        LinearLayout activityLayout = new LinearLayout(this);
-//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.MATCH_PARENT);
-//        activityLayout.setLayoutParams(lp);
-//        activityLayout.setOrientation(LinearLayout.VERTICAL);
-//        activityLayout.setPadding(16, 16, 16, 16);
-//
-//        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
-//                ViewGroup.LayoutParams.WRAP_CONTENT,
-//                ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        //mCallApiButton = new Button(this);
+
+
         mCallApiButton = (Button) findViewById(R.id.submitButton);
         mCallApiButton.setText(BUTTON_TEXT);
         mCallApiButton.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +111,150 @@ public class MainActivity extends Activity
         mCredential = GoogleAccountCredential.usingOAuth2(
                 getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+
+
+
+
+
+
+
     }
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult result) {
+        Toast.makeText(this, "Failured to Initialize!", Toast.LENGTH_LONG).show();
+    }
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+/** add listeners to YouTubePlayer instance **/
+        player.setPlayerStateChangeListener(playerStateChangeListener);
+        player.setPlaybackEventListener(playbackEventListener);
+/** Start buffering **/
+        if (!wasRestored) {
+            player.cueVideo(VIDEO_ID);
+        }
+    }
+    private YouTubePlayer.PlaybackEventListener playbackEventListener = new YouTubePlayer.PlaybackEventListener() {
+        @Override
+        public void onBuffering(boolean arg0) {
+        }
+        @Override
+        public void onPaused() {
+        }
+        @Override
+        public void onPlaying() {
+        }
+        @Override
+        public void onSeekTo(int arg0) {
+        }
+        @Override
+        public void onStopped() {
+        }
+    };
+    private YouTubePlayer.PlayerStateChangeListener playerStateChangeListener = new YouTubePlayer.PlayerStateChangeListener() {
+        @Override
+        public void onAdStarted() {
+        }
+        @Override
+        public void onError(YouTubePlayer.ErrorReason arg0) {
+        }
+        @Override
+        public void onLoaded(String arg0) {
+        }
+        @Override
+        public void onLoading() {
+        }
+        @Override
+        public void onVideoEnded() {
+        }
+        @Override
+        public void onVideoStarted() {
+        }
+    };
+
+
+
+
+
+
+
+
+    public void convertFunc(View view) {
+
+        EditText editText = (EditText) findViewById(R.id.dollars);
+        Double dollarAmount = Double.parseDouble(editText.getText().toString());
+        dollarAmount = dollarAmount * 70;
+        Toast.makeText(MainActivity.this, "Value in Rs. is " + dollarAmount.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    GoogleAccountCredential mCredential;
+    private TextView mOutputText;
+    private Button mCallApiButton;
+    ProgressDialog mProgress;
+
+    static final int REQUEST_ACCOUNT_PICKER = 1000;
+    static final int REQUEST_AUTHORIZATION = 1001;
+    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
+    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
+
+    private static final String BUTTON_TEXT = "Call YouTube Data API";
+    private static final String PREF_ACCOUNT_NAME = "accountName";
+    private static final String[] SCOPES = { YouTubeScopes.YOUTUBE_READONLY };
+
+    /**
+     * Create the main activity.
+     * @param savedInstanceState previously saved instance data.
+     */
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
+//
+////        LinearLayout activityLayout = new LinearLayout(this);
+////        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+////                LinearLayout.LayoutParams.MATCH_PARENT,
+////                LinearLayout.LayoutParams.MATCH_PARENT);
+////        activityLayout.setLayoutParams(lp);
+////        activityLayout.setOrientation(LinearLayout.VERTICAL);
+////        activityLayout.setPadding(16, 16, 16, 16);
+////
+////        ViewGroup.LayoutParams tlp = new ViewGroup.LayoutParams(
+////                ViewGroup.LayoutParams.WRAP_CONTENT,
+////                ViewGroup.LayoutParams.WRAP_CONTENT);
+//
+//        //mCallApiButton = new Button(this);
+//        mCallApiButton = (Button) findViewById(R.id.submitButton);
+//        mCallApiButton.setText(BUTTON_TEXT);
+//        mCallApiButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mCallApiButton.setEnabled(false);
+//                mOutputText.setText("");
+//                getResultsFromApi();
+//                mCallApiButton.setEnabled(true);
+//            }
+//        });
+//        //activityLayout.addView(mCallApiButton);
+//
+//        mOutputText = (TextView) findViewById(R.id.outputTextView);
+////        mOutputText = new TextView(this);
+////        mOutputText.setLayoutParams(tlp);
+////        mOutputText.setPadding(16, 16, 16, 16);
+////        mOutputText.setVerticalScrollBarEnabled(true);
+////        mOutputText.setMovementMethod(new ScrollingMovementMethod());
+//        mOutputText.setText(
+//                "Click the \'" + BUTTON_TEXT +"\' button to test the API.");
+//        //activityLayout.addView(mOutputText);
+//
+//        mProgress = new ProgressDialog(this);
+//        mProgress.setMessage("Calling YouTube Data API ...");
+//
+//        //setContentView(activityLayout);
+//
+//        // Initialize credentials and service object.
+//        mCredential = GoogleAccountCredential.usingOAuth2(
+//                getApplicationContext(), Arrays.asList(SCOPES))
+//                .setBackOff(new ExponentialBackOff());
+//    }
 
 
 

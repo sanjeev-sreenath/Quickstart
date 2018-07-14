@@ -6,60 +6,51 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/celebrityEditText"
-        android:layout_marginTop="27dp"
-        android:text="Enter name of Celeb" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="159dp"
+        android:onClick="convertFunc"
+        android:text="Convert" />
 
     <EditText
-        android:id="@+id/celebrityEditText"
-        android:layout_width="293dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="45dp"
-        android:ems="10"
-        android:inputType="textPersonName" />
-
-    <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/dollars"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/textView"
-        android:layout_marginTop="114dp"
-        android:text="Choose host" />
-
-    <Spinner
-        android:id="@+id/hostSpinner"
-        android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="143dp" />
+        android:layout_marginTop="60dp"
+        android:ems="10"
+        android:hint="Amount in $"
+        android:inputType="textPersonName|number" />
 
     <Button
         android:id="@+id/submitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="191dp"
-        android:onClick="showVideos"
-        android:text="Submit" />
+        android:layout_marginTop="179dp"
+        android:layout_toStartOf="@+id/button2"
+        android:text="Button" />
 
     <TextView
         android:id="@+id/outputTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="143dp"
-        android:text="abcd" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="192dp"
+        android:layout_toEndOf="@+id/button2"
+        android:text="TextView" />
+
+
+    <com.google.android.youtube.player.YouTubePlayerView
+        android:id="@+id/youtube_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"/>
+
 
 </RelativeLayout>
